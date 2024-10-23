@@ -8,12 +8,14 @@ enum MessageType {
 public class Message implements Serializable {
     public int id = -1;
     public MessageType messageType;
-    public Vector<Integer> clock;
+    public int clock;
+    String key;
    
     public Message(MessageType type, int id, Vector<Integer> timestamp) {
         this.messageType = type;
         this.id = id;
         this.clock = timestamp;
+        this.key = key;
     }
 
     public byte[] toMessageBytes() throws IOException {

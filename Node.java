@@ -10,7 +10,6 @@ public class Node {
     int id;
     String name;
     String port;
-    List<List<Integer>> neighbours = new ArrayList<>();
     // Config
     int totalNodes;
     int requestDelay;
@@ -44,11 +43,11 @@ public class Node {
         node = new Node(-1);
         // Parse the config file
         node.readConfig();
-        // Init Vector Clock;
-        node.initVectorClock();
+        // Init Keys
+        node.initKeys();
         // Print details
         node.printNodeConfig();
-        node.printNodeNeighbours();
+        node.printNodeKeys();
 
         // Server
         node.server = new Server(node.getPort(), node);
@@ -137,6 +136,11 @@ public class Node {
         }
     }
 
+    public void initKeys() {
+        for (int i = id + 1; i <= totalNodes; i++) {
+            this.keys.add(i);
+        }
+    }
     public String getHost() {
         return idToHost_PortMap.get(id).get(0);
     }
@@ -179,6 +183,13 @@ public class Node {
         System.out.println("Request Delay:    " + requestDelay);
         System.out.println("Execution Time:   " + executionTime);
         System.out.println("Max # of Request: " + maxRequest);
+        System.out.println("=====================================\n");
+    }
+    public void printNodeKeys() {
+        System.out.println("============= Node Keys =============");
+        for (Integer x : keys) {
+            System.out.print(x + ", ");
+        }
         System.out.println("=====================================\n");
     }
 
