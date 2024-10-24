@@ -18,6 +18,7 @@ public class Node {
     // Variable
     int requestSent = 0;
     boolean under_cs = false;
+    boolean end_flag = false;
     Vector<Integer> keys = new Vector<>();
     Vector<Integer> clock = new Vector<>();
 
@@ -29,6 +30,7 @@ public class Node {
     Map<String, List<Integer>> hostToId_PortMap = new HashMap<>();
     Map<Integer, List<String>> idToHost_PortMap = new HashMap<>();
     Map<Integer, Socket> idToChannelMap = new HashMap<>();
+    ConcurrentHashMap<Integer, Message> pendingRequest;
 
     public Node(int id) {
         this.id = id;
@@ -141,6 +143,7 @@ public class Node {
             this.keys.add(i);
         }
     }
+    
     public String getHost() {
         return idToHost_PortMap.get(id).get(0);
     }
@@ -156,22 +159,6 @@ public class Node {
     public int getPort(int id) {
         return Integer.parseInt(idToHost_PortMap.get(id).get(1));
     }
-
-    public void initVectorClock() {
-        for (int i = 0; i < totalNodes; i++) {
-            this.clock.add(0);
-        }
-    }
-
-    /**
-     * This function is for Entering the critical section.
-     */
-    public void enterCS(){}
-
-    /**
-     * This function is for Leaving the critical section.
-     */
-    public void leaveCS(){}
 
     /* ========== HELPER FUNCTIONS ========== */
     public void printNodeConfig() {
@@ -192,7 +179,6 @@ public class Node {
         }
         System.out.println("=====================================\n");
     }
-
     public void printNodeVectorClock() {
         int totalSent = 0, totalReceive = 0;
         System.out.println("========= Node Vector Clock =========");

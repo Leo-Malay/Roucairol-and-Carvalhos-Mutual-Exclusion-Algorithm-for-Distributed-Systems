@@ -17,9 +17,11 @@ public class Client {
     public List<Socket> connectChannels(Node node) {
         System.out.println("[CLIENT] Making channel array...");
         List<Socket> channelList = new ArrayList<>();
-        for (Integer neighbour : node.neighbours.get(node.id)) {
-            String host = node.getHost(neighbour);
-            int port = node.getPort(neighbour);
+        for (int i = 1; i <= node.totalNodes; i++)
+        {
+            if (i == node.id) continue;
+            String host = node.getHost(i);
+            int port = node.getPort(i);
             try {
                 Socket client = new Socket();
                 client.connect(new InetSocketAddress(host, port));
@@ -92,22 +94,6 @@ public class Client {
 
     }
 
-    public void sendCustomEnd() {
-        for (Socket channel : this.channelList) {
-            Message msg = new Message(node.id, node.id);
-            Client.sendMsg(msg, channel, node);
-        }
-
-        try {
-            node.pem_passive = true;
-            Thread.sleep(node.minSendDelay);
-            if (node.pem_passive && node.custom_end == node.neighbours.get(node.id).size())
-                node.printNodeVectorClock();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void sendMsg(Message msg, Socket channel, Node node) {
         try {
             OutputStream outStream = channel.getOutputStream();
@@ -128,6 +114,39 @@ public class Client {
         }
     }
 
+// ---
+    public static void csEnter() {}
+    public static void executeCS() {}
+    public static void csLeave() {}
+
+    public static void requestKeys(int nodeId) {
+        // Send Msg to Specific Channel.
+        Socket channel = node.idToChannelMap.get(nodeId);
+        try {
+            OutputStream outStream = channel.getOutputStream();
+            DataOutputStream dataOut = new DataOutputStream(outStream);
+
+            byte[] msgBytes = msg.toMessageBytes();
+            dataOut.writeInt(msgBytes.length);
+            dataOut.write(msgBytes);
+            dataOut.flush();
+        } catch (IOException error) {
+            error.printStackTrace();
+        }
+    }
+
+    public static boolean checkKeys() {
+        boolean hasAllKeys = true;
+        for (int i = 1; i <= node.totalNodes; i++) {
+            if (i == node.id) continue;
+            if (!node.keys.contains(i)) {
+                requestKey(i);
+                hasAllKeys = false;
+            }
+        }
+        return hasAllKeys;
+    }
+// ---
     public void init() {
         Thread client = new Thread(() -> {
             System.out.println("[CLIENT] Starting...");
