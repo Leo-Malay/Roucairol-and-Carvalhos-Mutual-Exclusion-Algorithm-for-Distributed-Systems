@@ -3,6 +3,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.*;
 
 public class Node {
@@ -18,9 +19,10 @@ public class Node {
     // Variable
     int requestSent = 0;
     boolean under_cs = false;
+    boolean pending_req = false;
     boolean end_flag = false;
     Vector<Integer> keys = new Vector<>();
-    Vector<Integer> clock = new Vector<>();
+    int clock = 0;
 
     // Components
     Server server;
@@ -39,9 +41,6 @@ public class Node {
     public static void main(String[] args) {
         // Init Node
         Node node;
-        // if (args.length > 0)
-        // node = new Node(Integer.parseInt(args[0]));
-        // else
         node = new Node(-1);
         // Parse the config file
         node.readConfig();
@@ -49,6 +48,7 @@ public class Node {
         node.initKeys();
         // Print details
         node.printNodeConfig();
+        node.printNodeNeighbours();
         node.printNodeKeys();
 
         // Server
@@ -143,7 +143,7 @@ public class Node {
             this.keys.add(i);
         }
     }
-    
+
     public String getHost() {
         return idToHost_PortMap.get(id).get(0);
     }
@@ -172,6 +172,7 @@ public class Node {
         System.out.println("Max # of Request: " + maxRequest);
         System.out.println("=====================================\n");
     }
+
     public void printNodeKeys() {
         System.out.println("============= Node Keys =============");
         for (Integer x : keys) {
@@ -179,14 +180,12 @@ public class Node {
         }
         System.out.println("=====================================\n");
     }
-    public void printNodeVectorClock() {
-        int totalSent = 0, totalReceive = 0;
-        System.out.println("========= Node Vector Clock =========");
-        for (int i = 0; i < totalNodes; i++) {
-            System.out.println("NodeId: " + i + " | Msg: " + clock.get(i));
+
+    public void printNodeNeighbours() {
+        System.out.println("============= Node Neighbours =============");
+        for (Integer x : keys) {
+            System.out.println("Node-" + x + " | " + getHost(x) + "::" + getPort(x));
         }
-        System.out.println("Total Send: " + totalSent + " | Total Recieve: " + totalReceive + " | Diff: "
-                + (totalSent - totalReceive));
         System.out.println("=====================================\n");
     }
 

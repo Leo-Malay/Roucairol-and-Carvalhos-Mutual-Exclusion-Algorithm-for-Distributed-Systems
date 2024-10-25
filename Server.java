@@ -15,11 +15,53 @@ public class Server {
         if (msg.id != -1)
             System.out.println("[SERVER] Message received from Node " + msg.id);
         // Message Handler
-
-        if (msg.messageType == MessageType.REQUEST) {
-           // Handle incoming Request for key.
-        } else if (msg.messageType == MessageType.REPLY) {
+        if (msg.msgType == MessageType.REQUEST) {
+            // Handle incoming Request for key.
+            if (node.under_cs) {
+                // Adding to pending request.
+                synchronized (node) {
+                    node.pendingRequest.put(msg.id, msg);
+                }
+            } else if (node.pending_req) {
+                // This is for when the request for CS is send
+                if (node.clock > msg.clock) {
+                    // Send the key
+                    node.client.sendKey(msg, true);
+                } else if (node.clock == msg.clock) {
+                    if (node.id < msg.id) {
+                        // Add to pending
+                        synchronized (node) {
+                            node.pendingRequest.put(msg.id, msg);
+                        }
+                    } else {
+                        // Send the key
+                        node.client.sendKey(msg, true);
+                    }
+                } else {
+                    // Add to pending
+                    synchronized (node) {
+                        node.pendingRequest.put(msg.id, msg);
+                    }
+                }
+            } else {
+                // Sending the key
+                node.client.sendKey(msg, false);
+            }
+        } else if (msg.msgType == MessageType.REPLY) {
             // Handle incoming Reply with key.
+            if (!node.keys.contains(msg.key)) {
+                System.out.println("[SERVER]: Key " + msg.key + " received from Node-" + msg.id);
+                synchronized (node) {
+                    node.keys.add(msg.key);
+                }
+            } else {
+                System.out.println("[SERVER]: Key " + msg.key + " somehow alrready exists!!");
+            }
+        } else if (msg.msgType == MessageType.BOTH) {
+            synchronized (node) {
+                node.keys.add(msg.key);
+                node.pendingRequest.put(msg.id, msg);
+            }
         }
 
     }
@@ -38,7 +80,6 @@ public class Server {
                         DataInputStream dataInputStream = new DataInputStream(clientInputStream);
 
                         while (!client.isClosed()) {
-
                             try {
                                 // Reading Incoming Message.
                                 int length = dataInputStream.readInt();

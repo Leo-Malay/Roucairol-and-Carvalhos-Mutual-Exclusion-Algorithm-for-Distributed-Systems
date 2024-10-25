@@ -1,20 +1,19 @@
 import java.io.*;
-import java.util.*;
 
 enum MessageType {
-    REQUEST, REPLY
+    REQUEST, REPLY, BOTH,
 };
 
 public class Message implements Serializable {
     public int id = -1;
-    public MessageType messageType;
+    public MessageType msgType;
     public int clock;
-    String key;
-   
-    public Message(MessageType type, int id, Vector<Integer> timestamp) {
-        this.messageType = type;
+    public int key = -1;
+
+    public Message(MessageType type, int id, int clock, int key) {
+        this.msgType = type;
         this.id = id;
-        this.clock = timestamp;
+        this.clock = clock;
         this.key = key;
     }
 
