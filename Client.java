@@ -50,15 +50,26 @@ public class Client {
 
     public void leaveCS() {
         synchronized (node) {
+            node.clock += 2;
             node.under_cs = false;
+            node.pending_req = false;
         }
+
+        // Sending the keys to all the neighbours
+        node.pendingRequest.forEach((key, value) -> {
+            node.client.sendKey(value, false);
+        });
+        synchronized (node) {
+            node.pendingRequest.clear();
+        }
+
     }
 
     /** Function to request key from respective process */
     public void requestKey(int nodeId) {
         // Send Msg to Specific Channel.
         Socket channel = node.idToChannelMap.get(nodeId);
-        Message req_msg = new Message(MessageType.REQUEST, node.id, 0, -1);
+        Message req_msg = new Message(MessageType.REQUEST, node.id, node.clock, -1);
         try {
             OutputStream outStream = channel.getOutputStream();
             DataOutputStream dataOut = new DataOutputStream(outStream);
@@ -81,7 +92,8 @@ public class Client {
                         node.keys.remove(msg.key);
                     }
 
-                    Message reply_msg = new Message(needBack ? MessageType.BOTH : MessageType.REPLY, node.id, 0,
+                    Message reply_msg = new Message(needBack ? MessageType.BOTH : MessageType.REPLY, node.id,
+                            node.clock,
                             node.id);
                     Socket channel = node.idToChannelMap.get(msg.id);
 
@@ -113,6 +125,12 @@ public class Client {
                 if (i == node.id)
                     continue;
                 if (!node.keys.contains(i)) {
+                    if (hasAllKeys) {
+                        synchronized (node) {
+                            node.clock += 1;
+                            node.pending_req = true;
+                        }
+                    }
                     requestKey(i);
                     hasAllKeys = false;
                 }

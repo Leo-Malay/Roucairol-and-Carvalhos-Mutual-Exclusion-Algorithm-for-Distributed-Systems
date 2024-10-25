@@ -23,11 +23,9 @@ public class Node {
     boolean end_flag = false;
     Vector<Integer> keys = new Vector<>();
     int clock = 0;
-
     // Components
     Server server;
     Client client;
-
     // Helper
     Map<String, List<Integer>> hostToId_PortMap = new HashMap<>();
     Map<Integer, List<String>> idToHost_PortMap = new HashMap<>();
