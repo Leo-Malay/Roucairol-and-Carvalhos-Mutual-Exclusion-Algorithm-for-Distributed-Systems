@@ -54,6 +54,7 @@ public class Server {
                 System.out.println("[SERVER]: Key " + msg.key + " received from Node-" + msg.id);
                 synchronized (node) {
                     node.keys.add(msg.key);
+                    node.clock = Math.max(node.clock, msg.clock);
                 }
             } else {
                 System.out.println("[SERVER]: Key " + msg.key + " somehow alrready exists!!");
