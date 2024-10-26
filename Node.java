@@ -161,7 +161,8 @@ public class Node {
     public void writeState() {
         String fileName = "aos-2.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
-            writer.write(this.id + " " + this.clock + " " + this.requestSent + "\n");
+            writer.write(this.id + " " + this.clock + " " + (Math.max(this.clock, this.pendingClock) + 1) + " "
+                    + this.requestSent + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }
