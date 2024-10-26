@@ -112,11 +112,11 @@ public class Client {
 
     /** Function to send the key to the respective process */
     public void sendKey(Message msg, boolean needBack) {
-        if (node.keys.contains(msg.key)) {
+        if (node.keys.contains(msg.id)) {
             synchronized (node) {
                 try {
-                    while (node.keys.contains(msg.key)) {
-                        node.keys.remove(msg.key);
+                    while (node.keys.contains(msg.id)) {
+                        node.keys.remove(msg.id);
                     }
                     // Asking for key back if required
                     Message reply_msg = new Message(needBack ? MessageType.BOTH : MessageType.REPLY, node.id,
