@@ -125,7 +125,7 @@ The `./launcher.sh` and `./cleanup.sh` scripts are provided by the professor. Al
 
 ## Conclusion
 
-This project delves into the intricacies of distributed systems, showcasing effective communication and state consistency through the Chandy-Lamport protocol. We encourage you to explore these concepts deeply and enhance your understanding.
+This project aims to provide a robust and efficient solution for distributed mutual exclusion, leveraging established algorithms and modern programming practices to ensure correctness, performance, and usability.
 
 If you have any questions or require further assistance, please don't hesitate to reach out!
 
