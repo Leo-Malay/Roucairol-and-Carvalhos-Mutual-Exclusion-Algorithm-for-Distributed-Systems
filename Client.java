@@ -115,9 +115,7 @@ public class Client {
         if (node.keys.contains(msg.id)) {
             synchronized (node) {
                 try {
-                    while (node.keys.contains(msg.id)) {
-                        node.keys.remove(msg.id);
-                    }
+                    node.keys.remove(Integer.valueOf(msg.id));
                     // Asking for key back if required
                     Message reply_msg = new Message(needBack ? MessageType.BOTH : MessageType.REPLY, node.id,
                             node.clock,
