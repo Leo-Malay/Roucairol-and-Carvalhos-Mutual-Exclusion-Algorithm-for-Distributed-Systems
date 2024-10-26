@@ -171,7 +171,7 @@ public class Client {
             System.out.println("[CLIENT] Starting...");
             try {
                 while (node.requestSent < node.maxRequest) {
-                    if (node.pending_req || node.under_cs)
+                    if (node.pending_req)
                         continue;
                     System.out.println("[CLEINT]: Will send the request for CS #" + node.requestSent + " in a bit");
                     try {
