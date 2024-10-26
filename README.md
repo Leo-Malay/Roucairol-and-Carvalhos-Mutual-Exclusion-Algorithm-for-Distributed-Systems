@@ -1,5 +1,5 @@
 # CS 6378: Advanced Operating Systems  
-**Project 1**  
+**Project 2**  
 **Instructor:** Prof. Neeraj Mittal  
 **Author:** Malay Virendra Bhavsar (MXB230055)
 
@@ -7,7 +7,7 @@
 
 ## Project Overview
 
-This individual project implements a distributed system using the Chandy-Lamport snapshot-taking protocol and the MAP (Message Active Passive) protocol. Developed in **Java (Version 22.0.2)**, the project emphasizes socket programming and distributed communication, running exclusively on the `dcXX.utdallas.edu` machines.
+This individual project aims to implement a distributed mutual exclusion service using Roucairol and Carvalho’s algorithm, providing cs-enter() and cs-leave() functions for process synchronization. Developed in **Java (Version 22.0.2)**, the project emphasizes socket programming and distributed communication, running exclusively on the `dcXX.utdallas.edu` machines.
 
 ---
 
@@ -15,13 +15,11 @@ This individual project implements a distributed system using the Chandy-Lamport
 
 The project comprises several essential components:
 
-- **Node**: Sets up Client, Server, and ChandyLamport instances; manages the configuration file.
+- **Node**: Sets up Client, Server instances; manages the configuration file.
   
 - **Server**: Oversees incoming communications and directs them appropriately.
   
-- **Client**: Manages outgoing communications, including application and control messages.
-  
-- **ChandyLamport**: Implements the snapshot protocol and ensures the consistency of snapshots.
+- **Client**: Manages outgoing communications, including sending key, requesting key. Also performs Critical Section Cycle (Blocking)
   
 - **Message**: Establishes a structured format for inter-process message exchange.
 
@@ -31,13 +29,13 @@ The project comprises several essential components:
 
 The project is divided into four main segments:
 
-1. **Part 1**: Implement a distributed system with `n` nodes, each able to send messages according to the MAP protocol. Nodes transition between active and passive states based on message counts and delays.
+1. **Part 1**: Implement a distributed system with `n` nodes, each able to send and recieve messages.
 
-2. **Part 2**: Integrate Chandy and Lamport’s protocol to record a consistent global snapshot, initiated by node 0, to detect the termination of the MAP protocol.
+2. **Part 2**: Implement Roucairol and Carvalho’s algorithm to syncronize the process
 
-3. **Part 3**: Implement Fidge/Mattern’s vector clock protocol to verify the consistency of snapshots through vector timestamps.
-
-4. **Part 4**: Create a protocol for halting all nodes after node 0 detects MAP protocol termination.
+3. **Part 3**: Generate output in the format `{nodeId} {Scalar Clock Value} {CS_completed}`
+   
+4. **Part 4**: Testing for Critical Section Overlap.
 
 ---
 
@@ -47,30 +45,26 @@ The project utilizes a plain-text configuration file formatted as follows:
 
 - The first line contains six tokens: 
     - `Number of nodes`
-    - `minPerActive`
-    - `maxPerActive`
-    - `minSendDelay`
-    - `snapshotDelay`
-    - `maxNumber`.
+    - `Request Delay`
+    - `Critical Section Execution Time`
+    - `Number of Critical Sections per Request`
 - The next `n` lines specify node details:
     - `nodeId`
     - `hostname`
     - `port`
-- The subsequent `n` lines list neighboring nodes.
-
 
 ---
 
 ## Output Format
 
-For a configuration file named `<config_name>.txt` with `n` nodes, the program will generate `n` output files named `<config_name>-<node_id>.out`. Each file contains vector timestamps for each snapshot recorded by the respective process.
+For a configuration file named `<config_name>.txt` with `n` nodes, the program will generate a output files named `aos2.txt`. Each file contains nodeId, scalar clock timestamps for each critical section and the number of critical sections completed by process.
 
 **Example Output:**
 ```
-0 4 3 6 0 2 3
-3 7 6 7 2 4 4
-6 9 11 10 5 7 5
-8 12 14 23 8 10 7
+0 0 0
+1 1 0
+0 3 1
+2 4 0
 ```
 ---
 
@@ -85,8 +79,8 @@ For a configuration file named `<config_name>.txt` with `n` nodes, the program w
 
 1. **Create a project directory:**
    ```bash
-   mkdir aos-project1
-   cd aos-project1
+   mkdir aos-project2
+   cd aos-project2
    ```
    
 2. Place all project files (including the configuration file) in this directory.
