@@ -23,6 +23,7 @@ public class Node {
     boolean end_flag = false;
     Vector<Integer> keys = new Vector<>();
     int clock = 0;
+    int pendingClock = 0;
     // Components
     Server server;
     Client client;
@@ -46,7 +47,7 @@ public class Node {
         node.initKeys();
         // Print details
         node.printNodeConfig();
-        // node.printNodeNeighbours();
+        node.printNodeNeighbours();
         node.printNodeKeys();
 
         // Server
@@ -121,7 +122,6 @@ public class Node {
                     List<Integer> valueB = new ArrayList<>();
                     valueB.add(node_Id);
                     valueB.add(node_Port);
-                    System.out.println("NodeId: " + node_Id);
                     this.idToHost_PortMap.put(node_Id, valueA);
                     this.hostToId_PortMap.put(node_Host, valueB);
                 }
@@ -137,7 +137,7 @@ public class Node {
     }
 
     public void initKeys() {
-        for (int i = id + 1; i <= totalNodes; i++) {
+        for (int i = id + 1; i < totalNodes; i++) {
             this.keys.add(i);
         }
     }
@@ -158,6 +158,15 @@ public class Node {
         return Integer.parseInt(idToHost_PortMap.get(id).get(1));
     }
 
+    public void writeState() {
+        String fileName = "aos-2.txt";
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.write(this.id + " " + this.clock + " " + this.requestSent + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /* ========== HELPER FUNCTIONS ========== */
     public void printNodeConfig() {
         System.out.println("============ Node Config ============");
@@ -176,7 +185,8 @@ public class Node {
         for (Integer x : keys) {
             System.out.print(x + ", ");
         }
-        System.out.println("=====================================\n");
+
+        System.out.println("\n=====================================\n");
     }
 
     public void printNodeNeighbours() {
@@ -184,7 +194,7 @@ public class Node {
         for (Integer x : keys) {
             System.out.println("Node-" + x + " | " + getHost(x) + "::" + getPort(x));
         }
-        System.out.println("=====================================\n");
+        System.out.println("===========================================\n");
     }
 
 }

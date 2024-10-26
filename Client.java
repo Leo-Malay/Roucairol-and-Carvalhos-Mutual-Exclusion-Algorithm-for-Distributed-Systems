@@ -35,13 +35,31 @@ public class Client {
         synchronized (node) {
             node.under_cs = true;
         }
+        // Will wait for 500ms and check for keys until has all the keys
+        System.out.println("[CLIENT]: Checking if all the keys are present or not");
+        boolean send_req = true;
+        while (!checkKeys(send_req)) {
+            try {
+                System.out.println("[CLIENT]: Waiting for all keys");
+                send_req = false;
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        // Entering the CS
+        System.out.println("[CLIENT]: All Keys are present. Entering the CS");
         executeCS();
     }
 
     /** Function to perform critical section */
     public void executeCS() {
         try {
+            System.out.println("[CLIENT]: CS in progress.....");
+            // Saving the state to file.
+            node.writeState();
             Thread.sleep(node.executionTime);
+            System.out.println("[CLEINT]: CS is completed.....");
             leaveCS();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -49,26 +67,32 @@ public class Client {
     }
 
     public void leaveCS() {
+        // Critical Section is done.
         synchronized (node) {
-            node.clock += 2;
+            node.clock += 1;
             node.under_cs = false;
             node.pending_req = false;
         }
 
         // Sending the keys to all the neighbours
+        System.out.println("[CLEINT]: Will go through the pending request list");
         node.pendingRequest.forEach((key, value) -> {
             if (value != null) {
+                System.out.println("[CLIENT]: Sending keys to pending node-" + key);
                 node.client.sendKey(value, false);
             }
         });
+        // Sent all the keys...clearing the queue
         synchronized (node) {
             node.pendingRequest.clear();
+            node.clock = Math.max(node.clock, node.pendingClock);
         }
 
     }
 
     /** Function to request key from respective process */
     public void requestKey(int nodeId) {
+        System.out.println("[CLIENT]: Key for node-" + nodeId + " was not found.");
         // Send Msg to Specific Channel.
         Socket channel = node.idToChannelMap.get(nodeId);
         Message req_msg = new Message(MessageType.REQUEST, node.id, node.clock, -1);
@@ -80,6 +104,7 @@ public class Client {
             dataOut.writeInt(msgBytes.length);
             dataOut.write(msgBytes);
             dataOut.flush();
+            System.out.println("[CLIENT]: Sent request to node-" + nodeId + " for key.");
         } catch (IOException error) {
             error.printStackTrace();
         }
@@ -93,7 +118,7 @@ public class Client {
                     while (node.keys.contains(msg.key)) {
                         node.keys.remove(msg.key);
                     }
-
+                    // Asking for key back if required
                     Message reply_msg = new Message(needBack ? MessageType.BOTH : MessageType.REPLY, node.id,
                             node.clock,
                             node.id);
@@ -107,33 +132,35 @@ public class Client {
                     dataOut.write(msgBytes);
                     dataOut.flush();
 
-                    System.out.println("[CLIENT]: Key sent to Node-" + msg.id);
+                    System.out.println("[CLIENT]: Key sent to node-" + msg.id);
                 } catch (IOException error) {
                     error.printStackTrace();
                 }
             }
         } else {
-            System.out.println("[CLIENT]: Error.. cant send the key if not present");
+            System.out.println("[CLIENT]: Error.. can not send the key if not present");
         }
     }
 
     /**
      * Function to check if all keys for entering critical section is present
      */
-    public boolean checkKeys() {
+    public boolean checkKeys(boolean send_req) {
         boolean hasAllKeys = true;
         synchronized (node) {
             for (int i = 0; i < node.totalNodes; i++) {
                 if (i == node.id)
                     continue;
                 if (!node.keys.contains(i)) {
-                    if (hasAllKeys) {
+
+                    if (hasAllKeys && node.pending_req == false) {
                         synchronized (node) {
                             node.clock += 1;
                             node.pending_req = true;
                         }
                     }
-                    requestKey(i);
+                    if (send_req)
+                        requestKey(i);
                     hasAllKeys = false;
                 }
             }
@@ -147,6 +174,9 @@ public class Client {
             System.out.println("[CLIENT] Starting...");
             try {
                 while (node.requestSent < node.maxRequest) {
+                    if (node.pending_req || node.under_cs)
+                        continue;
+                    System.out.println("[CLEINT]: Will send the request for CS #" + node.requestSent + " in a bit");
                     try {
                         Thread.sleep(node.requestDelay);
                     } catch (InterruptedException e) {
@@ -157,6 +187,7 @@ public class Client {
                     synchronized (node) {
                         node.requestSent += 1;
                     }
+                    System.out.println("[CLIENT]: Request for CS #" + (node.requestSent - 1) + " is completed");
                 }
                 System.out.println("[CLIENT]: All request for CS has been sent");
             } catch (Exception e) {

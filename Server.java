@@ -21,6 +21,7 @@ public class Server {
                 // Adding to pending request.
                 synchronized (node) {
                     node.pendingRequest.put(msg.id, msg);
+                    node.pendingClock = Math.max(node.clock, msg.clock + 1);
                 }
             } else if (node.pending_req) {
                 // This is for when the request for CS is send
