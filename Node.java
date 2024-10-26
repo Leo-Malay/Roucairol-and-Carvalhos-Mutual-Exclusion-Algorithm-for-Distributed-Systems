@@ -30,7 +30,7 @@ public class Node {
     Map<String, List<Integer>> hostToId_PortMap = new HashMap<>();
     Map<Integer, List<String>> idToHost_PortMap = new HashMap<>();
     Map<Integer, Socket> idToChannelMap = new HashMap<>();
-    ConcurrentHashMap<Integer, Message> pendingRequest;
+    ConcurrentHashMap<Integer, Message> pendingRequest = new ConcurrentHashMap<>();
 
     public Node(int id) {
         this.id = id;
@@ -46,7 +46,7 @@ public class Node {
         node.initKeys();
         // Print details
         node.printNodeConfig();
-        node.printNodeNeighbours();
+        // node.printNodeNeighbours();
         node.printNodeKeys();
 
         // Server
@@ -121,7 +121,7 @@ public class Node {
                     List<Integer> valueB = new ArrayList<>();
                     valueB.add(node_Id);
                     valueB.add(node_Port);
-
+                    System.out.println("NodeId: " + node_Id);
                     this.idToHost_PortMap.put(node_Id, valueA);
                     this.hostToId_PortMap.put(node_Host, valueB);
                 }

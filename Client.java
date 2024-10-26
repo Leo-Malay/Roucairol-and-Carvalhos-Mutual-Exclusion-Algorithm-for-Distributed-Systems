@@ -13,7 +13,7 @@ public class Client {
 
     public void connectChannels(Node node) {
         System.out.println("[CLIENT] Making channel array...");
-        for (int i = 1; i <= node.totalNodes; i++) {
+        for (int i = 0; i < node.totalNodes; i++) {
             if (i == node.id)
                 continue;
             String host = node.getHost(i);
@@ -57,7 +57,9 @@ public class Client {
 
         // Sending the keys to all the neighbours
         node.pendingRequest.forEach((key, value) -> {
-            node.client.sendKey(value, false);
+            if (value != null) {
+                node.client.sendKey(value, false);
+            }
         });
         synchronized (node) {
             node.pendingRequest.clear();
@@ -121,7 +123,7 @@ public class Client {
     public boolean checkKeys() {
         boolean hasAllKeys = true;
         synchronized (node) {
-            for (int i = 1; i <= node.totalNodes; i++) {
+            for (int i = 0; i < node.totalNodes; i++) {
                 if (i == node.id)
                     continue;
                 if (!node.keys.contains(i)) {
