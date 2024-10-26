@@ -150,7 +150,6 @@ public class Client {
                 if (i == node.id)
                     continue;
                 if (!node.keys.contains(i)) {
-
                     if (hasAllKeys && node.pending_req == false) {
                         synchronized (node) {
                             node.clock += 1;
