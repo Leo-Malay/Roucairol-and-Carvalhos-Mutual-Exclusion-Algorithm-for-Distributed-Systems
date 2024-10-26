@@ -69,7 +69,7 @@ public class Client {
     public void leaveCS() {
         // Critical Section is done.
         synchronized (node) {
-            node.clock += 1;
+            node.clock = Math.max(node.clock, node.pendingClock) + 1;
             node.under_cs = false;
             node.pending_req = false;
         }
@@ -85,7 +85,6 @@ public class Client {
         // Sent all the keys...clearing the queue
         synchronized (node) {
             node.pendingRequest.clear();
-            node.clock = Math.max(node.clock, node.pendingClock);
         }
 
     }
@@ -171,7 +170,7 @@ public class Client {
             System.out.println("[CLIENT] Starting...");
             try {
                 while (node.requestSent < node.maxRequest) {
-                    if (node.pending_req)
+                    if (node.pending_req || node.under_cs)
                         continue;
                     System.out.println("[CLEINT]: Will send the request for CS #" + node.requestSent + " in a bit");
                     try {

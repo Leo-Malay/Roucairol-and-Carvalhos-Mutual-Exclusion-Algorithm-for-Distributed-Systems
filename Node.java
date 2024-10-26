@@ -50,11 +50,6 @@ public class Node {
         node.printNodeNeighbours();
         node.printNodeKeys();
 
-        if (node.id == 0)
-            synchronized (node) {
-                node.under_cs = true;
-            }
-
         // Server
         node.server = new Server(node.getPort(), node);
         node.server.init();
