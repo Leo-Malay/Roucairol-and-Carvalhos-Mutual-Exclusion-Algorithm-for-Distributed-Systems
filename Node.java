@@ -159,7 +159,7 @@ public class Node {
     }
 
     public void writeState() {
-        String fileName = "aos-2.txt";
+        String fileName = "aos-project2/aos-2.txt";
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(this.id + " " + Math.max(this.clock, this.pendingClock) + " "
                     + this.requestSent + "\n");
