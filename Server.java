@@ -21,7 +21,7 @@ public class Server {
                 // Adding to pending request.
                 synchronized (node) {
                     node.pendingRequest.put(msg.id, msg);
-                    node.pendingClock = Math.max(node.clock, msg.clock + 1);
+                    node.pendingClock = Math.max(node.clock, msg.clock);
                 }
             } else if (node.pending_req) {
                 // This is for when the request for CS is send
@@ -33,6 +33,7 @@ public class Server {
                         // Add to pending
                         synchronized (node) {
                             node.pendingRequest.put(msg.id, msg);
+                            node.pendingClock = Math.max(node.clock, msg.clock);
                         }
                     } else {
                         // Send the key
@@ -42,6 +43,7 @@ public class Server {
                     // Add to pending
                     synchronized (node) {
                         node.pendingRequest.put(msg.id, msg);
+                        node.pendingClock = Math.max(node.clock, msg.clock);
                     }
                 }
             } else {
@@ -54,7 +56,7 @@ public class Server {
                 System.out.println("[SERVER]: Key " + msg.key + " received from Node-" + msg.id);
                 synchronized (node) {
                     node.keys.add(msg.key);
-                    node.pendingClock = Math.max(node.clock, msg.clock);
+                    node.clock = Math.max(node.clock, msg.clock) + 1;
                 }
             } else {
                 System.out.println("[SERVER]: Key " + msg.key + " somehow alrready exists!!");
@@ -63,6 +65,7 @@ public class Server {
             synchronized (node) {
                 node.keys.add(msg.key);
                 node.pendingRequest.put(msg.id, msg);
+                node.pendingClock = Math.max(node.clock, msg.clock);
             }
         }
 
