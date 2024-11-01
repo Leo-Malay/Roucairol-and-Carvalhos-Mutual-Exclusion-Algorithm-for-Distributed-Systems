@@ -12,6 +12,7 @@ public class Tester {
     public static void test(String filename) {
         try (BufferedReader fileBuffer = new BufferedReader(new FileReader(filename))) {
             String line;
+            boolean flag = false;
             Double prevValue = null;
 
             while ((line = fileBuffer.readLine()) != null) {
@@ -29,6 +30,7 @@ public class Tester {
 
                     if (prevValue != null) {
                         if (currValue <= prevValue) {
+                            flag = true;
                             System.out.println("[ERROR]: Mutual Exclusion doesn't hold");
                         }
                     }
@@ -39,7 +41,8 @@ public class Tester {
                 }
             }
 
-            System.out.println("[SUCCESS]: Mutual Exclusion Holds :)");
+            if (flag == false)
+                System.out.println("[SUCCESS]: Mutual Exclusion Holds :)");
 
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
