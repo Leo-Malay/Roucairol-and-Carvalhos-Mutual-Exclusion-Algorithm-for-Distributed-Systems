@@ -12,8 +12,6 @@ public class Server {
     }
 
     public void handleMessage(Message msg) {
-        if (msg.id != -1)
-            System.out.println("[SERVER] Message received from Node " + msg.id);
         // Message Handler
         if (msg.msgType == MessageType.REQUEST) {
             // Handle incoming Request for key.

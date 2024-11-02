@@ -35,17 +35,11 @@ public class Client {
         synchronized (node) {
             node.under_cs = true;
         }
-        // Will wait for 500ms and check for keys until has all the keys
+        // Check for keys until has all the keys
         System.out.println("[CLIENT]  Checking if all the keys are present or not");
         boolean send_req = true;
         while (!checkKeys(send_req)) {
-            try {
-                System.out.println("[CLIENT]  Waiting for all keys");
-                send_req = false;
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            send_req = false;
         }
         // Entering the CS
         System.out.println("[CLIENT]  All Keys are present. Entering the CS");
@@ -58,7 +52,8 @@ public class Client {
             System.out.println("[CLIENT]  CS in progress.....");
             // Saving the state to file.
             node.writeState();
-            Thread.sleep(node.executionTime);
+            int wait = 1 + (int) (Math.random() * (node.executionTime));
+            Thread.sleep(wait);
             System.out.println("[CLEINT]  CS is completed.....");
             leaveCS();
         } catch (InterruptedException e) {
@@ -75,7 +70,6 @@ public class Client {
         }
 
         // Sending the keys to all the neighbours
-        System.out.println("[CLEINT]  Will go through the pending request list");
         node.pendingRequest.forEach((key, value) -> {
             if (value != null) {
                 System.out.println("[CLIENT]  Sending keys to pending node-" + key);
@@ -91,7 +85,6 @@ public class Client {
 
     /** Function to request key from respective process */
     public void requestKey(int nodeId) {
-        System.out.println("[CLIENT]  Key for node-" + nodeId + " was not found.");
         // Send Msg to Specific Channel.
         Socket channel = node.idToChannelMap.get(nodeId);
         Message req_msg = new Message(MessageType.REQUEST, node.id, node.clock, -1);
@@ -172,9 +165,9 @@ public class Client {
                 while (node.requestSent < node.maxRequest) {
                     if (node.pending_req || node.under_cs)
                         continue;
-                    System.out.println("[CLEINT]  Will send the request for CS #" + node.requestSent + " in a bit");
                     try {
-                        Thread.sleep(node.requestDelay);
+                        int wait = 1 + (int) (Math.random() * (node.requestDelay));
+                        Thread.sleep(wait);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -183,7 +176,7 @@ public class Client {
                     synchronized (node) {
                         node.requestSent += 1;
                     }
-                    System.out.println("[CLIENT]  Request for CS #" + (node.requestSent - 1) + " is completed");
+                    System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
                 }
                 System.out.println("[CLIENT]  All request for CS has been sent");
             } catch (Exception e) {
