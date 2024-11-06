@@ -51,13 +51,13 @@ public class Server {
         } else if (msg.msgType == MessageType.REPLY) {
             // Handle incoming Reply with key.
             if (!node.keys.contains(msg.key)) {
-                System.out.println("[SERVER]: Key " + msg.key + " received from Node-" + msg.id);
+                System.out.println("[SERVER] Key received from Node-" + msg.id);
                 synchronized (node) {
                     node.keys.add(msg.key);
                     node.clock = Math.max(node.clock, msg.clock) + 1;
                 }
             } else {
-                System.out.println("[SERVER]: Key " + msg.key + " somehow alrready exists!!");
+                System.out.println("[SERVER] Key somehow alrready exists!!");
             }
         } else if (msg.msgType == MessageType.BOTH) {
             synchronized (node) {

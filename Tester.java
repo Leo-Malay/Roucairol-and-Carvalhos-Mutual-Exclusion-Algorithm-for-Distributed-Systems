@@ -20,7 +20,7 @@ public class Tester {
 
                 // Check if the line has at least three parts
                 if (parts.length < 3) {
-                    System.out.println("[ERROR]: Line Invalid");
+                    System.out.println("[ERROR] Line Invalid");
                     continue;
                 }
 
@@ -31,18 +31,18 @@ public class Tester {
                     if (prevValue != null) {
                         if (currValue <= prevValue) {
                             flag = true;
-                            System.out.println("[ERROR]: Mutual Exclusion doesn't hold");
+                            System.out.println("[ERROR] Mutual Exclusion doesn't hold");
                         }
                     }
                     prevValue = currValue;
 
                 } catch (NumberFormatException e) {
-                    System.out.println("[ERROR]: Line Invalid");
+                    System.out.println("[ERROR] Line Invalid");
                 }
             }
 
             if (flag == false)
-                System.out.println("[SUCCESS]: Mutual Exclusion Holds :)");
+                System.out.println("[SUCCESS] Mutual Exclusion Holds :)");
 
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());

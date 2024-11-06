@@ -181,7 +181,7 @@ public class Client {
                     System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
                 }
 
-                node.exp.write();
+                node.exp.write(node.maxRequest);
                 System.out.println("[CLIENT]  All request for CS has been sent");
             } catch (Exception e) {
                 e.printStackTrace();

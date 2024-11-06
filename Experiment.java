@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Experiment {
     public long totalMessages = 0;
     public long startTime = 0;
+    public long avgTime = 0;
     public long endTime = 0;
     public String fileName;
     public ArrayList<long[]> data;
@@ -21,19 +22,14 @@ public class Experiment {
 
     public void recordEnd() {
         this.endTime = System.currentTimeMillis();
-        this.data.add(new long[] { this.startTime, this.endTime, (this.endTime - this.startTime), this.totalMessages });
-        this.totalMessages = 0;
+        this.avgTime += (this.endTime - this.startTime)
         this.startTime = 0;
         this.endTime = 0;
     }
 
-    public void write() {
+    public void write(int maxRequest) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileName, true))) {
-            for (int i = 0; i < data.size(); i++) {
-                writer.write(
-                        data.get(i)[0] + " " + data.get(i)[1] + " " + data.get(i)[2] + " " + data.get(i)[3] + "\n");
-            }
-            this.totalMessages = 0;
+            writer.write("Avg Time:" + (this.avgTime / maxRequest) + " | Total Msg: " + this.totalMessages + "\n");
             this.startTime = 0;
             this.endTime = 0;
         } catch (IOException e) {
