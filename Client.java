@@ -37,7 +37,7 @@ public class Client {
             node.exp.recordStart();
         }
         // Check for keys until has all the keys
-        System.out.println("[CLIENT]  Checking if all the keys are present or not");
+        // System.out.println("[CLIENT] Checking if all the keys are present or not");
         boolean send_req = true;
         while (!checkKeys(send_req)) {
             send_req = false;
@@ -97,7 +97,7 @@ public class Client {
             dataOut.write(msgBytes);
             dataOut.flush();
             node.exp.totalMessages += 1;
-            System.out.println("[CLIENT] Sent request to node-" + nodeId + " for key.");
+            // System.out.println("[CLIENT] Sent request to node-" + nodeId + " for key.");
         } catch (IOException error) {
             error.printStackTrace();
         }
@@ -123,7 +123,7 @@ public class Client {
                     dataOut.write(msgBytes);
                     dataOut.flush();
 
-                    System.out.println("[CLIENT] Key sent to node-" + msg.id);
+                    // System.out.println("[CLIENT] Key sent to node-" + msg.id);
                 } catch (IOException error) {
                     error.printStackTrace();
                 }
