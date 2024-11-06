@@ -1,4 +1,5 @@
-# CS 6378: Advanced Operating Systems  
+# CS 6378: Advanced Operating Systems
+
 **Project 2**  
 **Instructor:** Prof. Neeraj Mittal  
 **Author:** Malay Virendra Bhavsar (MXB230055)
@@ -16,12 +17,10 @@ This individual project aims to implement a distributed mutual exclusion service
 The project comprises several essential components:
 
 - **Node**: Sets up Client, Server instances; manages the configuration file.
-  
 - **Server**: Oversees incoming communications and directs them appropriately.
-  
 - **Client**: Manages outgoing communications, including sending key, requesting key. Also performs Critical Section Cycle (Blocking)
-  
 - **Message**: Establishes a structured format for inter-process message exchange.
+- **Tester**: Processes the generated CS output and verdit weather it follows Mutual Exclusion or not.
 
 ---
 
@@ -30,11 +29,8 @@ The project comprises several essential components:
 The project is divided into four main segments:
 
 1. **Part 1**: Implement a distributed system with `n` nodes, each able to send and recieve messages.
-
-2. **Part 2**: Implement Roucairol and Carvalho’s algorithm to syncronize the process
-
-3. **Part 3**: Generate output in the format `{nodeId} {Scalar Clock Value} {CS_completed}`
-   
+2. **Part 2**: Implement Roucairol and Carvalho’s algorithm to syncronize the process.
+3. **Part 3**: Generate output in the format `{nodeId} {Scalar Clock Value} {CS_completed}`.
 4. **Part 4**: Testing for Critical Section Overlap.
 
 ---
@@ -43,15 +39,15 @@ The project is divided into four main segments:
 
 The project utilizes a plain-text configuration file formatted as follows:
 
-- The first line contains six tokens: 
-    - `Number of nodes`
-    - `Request Delay`
-    - `Critical Section Execution Time`
-    - `Number of Critical Sections per Request`
+- The first line contains six tokens:
+  - `Number of nodes`
+  - `Request Delay`
+  - `Critical Section Execution Time`
+  - `Number of Critical Sections per Request`
 - The next `n` lines specify node details:
-    - `nodeId`
-    - `hostname`
-    - `port`
+  - `nodeId`
+  - `hostname`
+  - `port`
 
 ---
 
@@ -60,12 +56,14 @@ The project utilizes a plain-text configuration file formatted as follows:
 For a configuration file named `<config_name>.txt` with `n` nodes, the program will generate a output files named `aos2.txt`. Each file contains nodeId, scalar clock timestamps for each critical section and the number of critical sections completed by process.
 
 **Example Output:**
+
 ```
 0 0 0
 1 1 0
 0 3 1
 2 4 0
 ```
+
 ---
 
 ## Getting Started
@@ -82,37 +80,48 @@ For a configuration file named `<config_name>.txt` with `n` nodes, the program w
    mkdir aos-project2
    cd aos-project2
    ```
-   
 2. Place all project files (including the configuration file) in this directory.
 
 3. Compile the project:
-  ```bash
-  javac *.java
-  ```
+
+```bash
+javac *.java
+```
 
 4. Clean up before and after running the program:
-  ```bash
-  chmod +x cleanup.sh
-  ./cleanup.sh
-  ```
+
+```bash
+chmod +x cleanup.sh
+./cleanup.sh
+```
 
 5. Run the program:
-  ```bash
-  chmod +x launcher.sh
-  ./launcher.sh
-  ```
 
-6. Perform cleanup after use:
-  ```bash
-  ./cleanup.sh
-  ```
+```bash
+chmod +x launcher.sh
+./launcher.sh
+```
+
+6. Run the Test program:
+
+```bash
+java Tester
+```
+
+7. Perform cleanup after use:
+
+```bash
+./cleanup.sh
+```
 
 ### Connecting to the Server
 
 To connect to the server at `dcXX.utdallas.edu`, use the following command (omit the password):
+
 ```bash
 ssh <your-username>@dcXX.utdallas.edu
 ```
+
 Ensure that you replace <your-username> with your actual username. After connecting, you can navigate to your project directory to compile and run your code.
 
 ---
@@ -130,5 +139,3 @@ This project aims to provide a robust and efficient solution for distributed mut
 If you have any questions or require further assistance, please don't hesitate to reach out!
 
 ---
-
-

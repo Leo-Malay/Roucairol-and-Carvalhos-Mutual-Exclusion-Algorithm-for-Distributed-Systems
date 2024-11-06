@@ -5,7 +5,7 @@ import java.io.IOException;
 public class Tester {
 
     public static void main(String[] args) {
-        String filename = "./aos-2.txt";
+        String filename = "./aos-result.txt";
         test(filename);
     }
 

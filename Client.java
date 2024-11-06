@@ -43,7 +43,7 @@ public class Client {
             send_req = false;
         }
         // Entering the CS
-        System.out.println("[CLIENT]  All Keys are present. Entering the CS");
+        System.out.println("[CLIENT] All Keys are present. Entering the CS");
         executeCS();
     }
 
@@ -138,23 +138,23 @@ public class Client {
      */
     public boolean checkKeys(boolean send_req) {
         boolean hasAllKeys = true;
-        synchronized (node) {
-            for (int i = 0; i < node.totalNodes; i++) {
-                if (i == node.id)
-                    continue;
-                if (!node.keys.contains(i)) {
-                    if (hasAllKeys && node.pending_req == false) {
-                        synchronized (node) {
-                            node.clock += 1;
-                            node.pending_req = true;
-                        }
+        // synchronized (node) {
+        for (int i = 0; i < node.totalNodes; i++) {
+            if (i == node.id)
+                continue;
+            if (!node.keys.contains(i)) {
+                if (hasAllKeys && node.pending_req == false) {
+                    synchronized (node) {
+                        node.clock += 1;
+                        node.pending_req = true;
                     }
-                    if (send_req)
-                        requestKey(i);
-                    hasAllKeys = false;
                 }
+                if (send_req)
+                    requestKey(i);
+                hasAllKeys = false;
             }
         }
+        // }
         return hasAllKeys;
     }
 
@@ -178,11 +178,11 @@ public class Client {
                     synchronized (node) {
                         node.requestSent += 1;
                     }
-                    System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
+                    System.out.println("[CLIENT] Request for CS #" + node.requestSent + " is completed");
                 }
 
-                node.exp.write(node.maxRequest);
-                System.out.println("[CLIENT]  All request for CS has been sent");
+                node.exp.write();
+                System.out.println("[CLIENT] All request for CS has been sent");
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -11,6 +11,7 @@ public class Node {
     int id;
     String name;
     String port;
+    String fileName = "aos-project2/aos-result.txt";
     // Config
     int totalNodes;
     int requestDelay;
@@ -48,11 +49,10 @@ public class Node {
         node.initKeys();
         // Print details
         node.printNodeConfig();
-        node.printNodeNeighbours();
         node.printNodeKeys();
 
         // Experiment
-        node.exp = new Experiment(node.id);
+        node.exp = new Experiment(node.id, node.totalNodes, node.requestDelay, node.executionTime, node.maxRequest);
         // Server
         node.server = new Server(node.getPort(), node);
         node.server.init();
@@ -161,7 +161,7 @@ public class Node {
     }
 
     public void writeState() {
-        String fileName = "aos-project2/aos-2.txt";
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
             writer.write(this.id + " " + Math.max(this.clock, this.pendingClock) + " "
                     + this.requestSent + "\n");
@@ -188,16 +188,7 @@ public class Node {
         for (Integer x : keys) {
             System.out.print(x + ", ");
         }
-
         System.out.println("\n=====================================\n");
-    }
-
-    public void printNodeNeighbours() {
-        System.out.println("============= Node Neighbours =============");
-        for (Integer x : keys) {
-            System.out.println("Node-" + x + " | " + getHost(x) + "::" + getPort(x));
-        }
-        System.out.println("===========================================\n");
     }
 
 }
