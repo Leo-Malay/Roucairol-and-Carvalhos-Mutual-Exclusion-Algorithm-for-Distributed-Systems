@@ -21,7 +21,7 @@ public class Experiment {
     }
 
     public void write(int csCount) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileName, true))) {
             writer.write(csCount + " " + this.startTime + " " + this.endTime + " " + (this.endTime - this.startTime)
                     + " " + this.totalMessages + "\n");
             this.totalMessages = 0;

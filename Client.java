@@ -52,8 +52,9 @@ public class Client {
         try {
             // Saving the state to file.
             node.writeState();
-            int wait = 1 + (int) (Math.random() * (node.executionTime));
-            Thread.sleep(wait);
+            // int wait = 1 + (int) (Math.random() * (node.executionTime));
+            // Thread.sleep(wait);
+            Thread.sleep(node.executionTime);
             node.exp.recordEnd();
             leaveCS();
         } catch (InterruptedException e) {
@@ -167,8 +168,9 @@ public class Client {
                     if (node.pending_req || node.under_cs)
                         continue;
                     try {
-                        int wait = 1 + (int) (Math.random() * (node.requestDelay));
-                        Thread.sleep(wait);
+                        // int wait = 1 + (int) (Math.random() * (node.requestDelay));
+                        // Thread.sleep(wait);
+                        Thread.sleep(node.requestDelay);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
