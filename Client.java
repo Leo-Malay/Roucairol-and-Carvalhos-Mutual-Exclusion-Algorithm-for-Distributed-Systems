@@ -50,13 +50,11 @@ public class Client {
     /** Function to perform critical section */
     public void executeCS() {
         try {
-            System.out.println("[CLIENT]  CS in progress.....");
             // Saving the state to file.
             node.writeState();
             int wait = 1 + (int) (Math.random() * (node.executionTime));
             Thread.sleep(wait);
             node.exp.recordEnd();
-            System.out.println("[CLEINT]  CS is completed.....");
             leaveCS();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -75,7 +73,6 @@ public class Client {
         // Sending the keys to all the neighbours
         node.pendingRequest.forEach((key, value) -> {
             if (value != null) {
-                System.out.println("[CLIENT]  Sending keys to pending node-" + key);
                 node.client.sendKey(value, false);
             }
         });
@@ -100,7 +97,7 @@ public class Client {
             dataOut.write(msgBytes);
             dataOut.flush();
             node.exp.totalMessages += 1;
-            System.out.println("[CLIENT]  Sent request to node-" + nodeId + " for key.");
+            System.out.println("[CLIENT] Sent request to node-" + nodeId + " for key.");
         } catch (IOException error) {
             error.printStackTrace();
         }
@@ -126,13 +123,13 @@ public class Client {
                     dataOut.write(msgBytes);
                     dataOut.flush();
 
-                    System.out.println("[CLIENT]  Key sent to node-" + msg.id);
+                    System.out.println("[CLIENT] Key sent to node-" + msg.id);
                 } catch (IOException error) {
                     error.printStackTrace();
                 }
             }
         } else {
-            System.out.println("[CLIENT]  Error.. can not send the key if not present");
+            System.out.println("[CLIENT] Error.. can not send the key if not present");
         }
     }
 
@@ -182,7 +179,6 @@ public class Client {
                     }
                     System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
                 }
-                node.exp.commit();
                 System.out.println("[CLIENT]  All request for CS has been sent");
             } catch (Exception e) {
                 e.printStackTrace();

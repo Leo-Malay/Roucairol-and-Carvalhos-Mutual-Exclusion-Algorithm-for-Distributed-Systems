@@ -57,8 +57,8 @@ public class Node {
         node.server = new Server(node.getPort(), node);
         node.server.init();
         try {
-            System.out.println("[SERVER] Loading... Wait 10s");
-            Thread.sleep(10000);
+            System.out.println("[SERVER] Loading... Wait 15s");
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -71,7 +71,6 @@ public class Node {
             e.printStackTrace();
         }
         node.client.init();
-
     }
 
     public void readConfig() {
