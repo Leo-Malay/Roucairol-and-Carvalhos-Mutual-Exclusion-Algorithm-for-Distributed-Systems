@@ -97,7 +97,7 @@ public class Client {
             dataOut.write(msgBytes);
             dataOut.flush();
             node.exp.totalMessages += 1;
-            // System.out.println("[CLIENT] Sent request to node-" + nodeId + " for key.");
+            System.out.println("[CLIENT] Sent request to node-" + nodeId + " for key.");
         } catch (IOException error) {
             error.printStackTrace();
         }
