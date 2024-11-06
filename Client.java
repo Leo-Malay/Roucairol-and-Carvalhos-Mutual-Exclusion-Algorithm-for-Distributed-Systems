@@ -34,6 +34,7 @@ public class Client {
         // Start critical section
         synchronized (node) {
             node.under_cs = true;
+            node.exp.recordStart();
         }
         // Check for keys until has all the keys
         System.out.println("[CLIENT]  Checking if all the keys are present or not");
@@ -54,6 +55,7 @@ public class Client {
             node.writeState();
             int wait = 1 + (int) (Math.random() * (node.executionTime));
             Thread.sleep(wait);
+            node.exp.recordEnd();
             System.out.println("[CLEINT]  CS is completed.....");
             leaveCS();
         } catch (InterruptedException e) {
@@ -67,6 +69,7 @@ public class Client {
             node.clock = Math.max(node.clock, node.pendingClock) + 1;
             node.under_cs = false;
             node.pending_req = false;
+            node.exp.write(node.requestSent);
         }
 
         // Sending the keys to all the neighbours
@@ -96,6 +99,7 @@ public class Client {
             dataOut.writeInt(msgBytes.length);
             dataOut.write(msgBytes);
             dataOut.flush();
+            node.exp.totalMessages += 1;
             System.out.println("[CLIENT]  Sent request to node-" + nodeId + " for key.");
         } catch (IOException error) {
             error.printStackTrace();
@@ -178,6 +182,7 @@ public class Client {
                     }
                     System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
                 }
+                node.exp.commit();
                 System.out.println("[CLIENT]  All request for CS has been sent");
             } catch (Exception e) {
                 e.printStackTrace();

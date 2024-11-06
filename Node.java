@@ -27,6 +27,7 @@ public class Node {
     // Components
     Server server;
     Client client;
+    Experiment exp;
     // Helper
     Map<String, List<Integer>> hostToId_PortMap = new HashMap<>();
     Map<Integer, List<String>> idToHost_PortMap = new HashMap<>();
@@ -50,6 +51,8 @@ public class Node {
         node.printNodeNeighbours();
         node.printNodeKeys();
 
+        // Experiment
+        node.exp = new Experiment(node.id);
         // Server
         node.server = new Server(node.getPort(), node);
         node.server.init();
