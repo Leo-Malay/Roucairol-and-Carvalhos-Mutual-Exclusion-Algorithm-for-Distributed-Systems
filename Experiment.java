@@ -1,15 +1,18 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Experiment {
-    public int totalMessages = 0;
+    public long totalMessages = 0;
     public long startTime = 0;
     public long endTime = 0;
     public String fileName;
+    public ArrayList<long[]> data;
 
     public Experiment(int nodeId) {
         fileName = nodeId + "-out.txt";
+        data = new ArrayList<>();
     }
 
     public void recordStart() {
@@ -18,12 +21,18 @@ public class Experiment {
 
     public void recordEnd() {
         this.endTime = System.currentTimeMillis();
+        this.data.add(new long[] { this.startTime, this.endTime, (this.endTime - this.startTime), this.totalMessages });
+        this.totalMessages = 0;
+        this.startTime = 0;
+        this.endTime = 0;
     }
 
-    public void write(int csCount) {
+    public void write() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(this.fileName, true))) {
-            writer.write(csCount + " " + this.startTime + " " + this.endTime + " " + (this.endTime - this.startTime)
-                    + " " + this.totalMessages + "\n");
+            for (int i = 0; i < data.size(); i++) {
+                writer.write(
+                        data.get(i)[0] + " " + data.get(i)[1] + " " + data.get(i)[2] + " " + data.get(i)[3] + "\n");
+            }
             this.totalMessages = 0;
             this.startTime = 0;
             this.endTime = 0;

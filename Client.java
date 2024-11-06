@@ -68,7 +68,6 @@ public class Client {
             node.clock = Math.max(node.clock, node.pendingClock) + 1;
             node.under_cs = false;
             node.pending_req = false;
-            node.exp.write(node.requestSent);
         }
 
         // Sending the keys to all the neighbours
@@ -181,6 +180,8 @@ public class Client {
                     }
                     System.out.println("[CLIENT]  Request for CS #" + node.requestSent + " is completed");
                 }
+
+                node.exp.write();
                 System.out.println("[CLIENT]  All request for CS has been sent");
             } catch (Exception e) {
                 e.printStackTrace();
