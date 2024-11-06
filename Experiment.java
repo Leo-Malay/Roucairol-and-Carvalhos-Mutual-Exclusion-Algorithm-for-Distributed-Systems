@@ -22,7 +22,7 @@ public class Experiment {
 
     public void recordEnd() {
         this.endTime = System.currentTimeMillis();
-        this.avgTime += (this.endTime - this.startTime)
+        this.avgTime += (this.endTime - this.startTime);
         this.startTime = 0;
         this.endTime = 0;
     }
